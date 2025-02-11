@@ -178,8 +178,8 @@ export default function SearchPage() {
               <div>
                 <h3 className="text-xl font-semibold mb-2">Search Tips</h3>
                 <ul className="list-disc list-inside space-y-2 text-gray-300">
-                  <li>Enter a complete Ethereum address starting with "0x"</li>
-                  <li>You can search for ENS domains (e.g., "vitalik.eth")</li>
+                  <li>Enter a complete Ethereum address starting with `0x`</li>
+                  <li>You can search for ENS domains (e.g., `vitalik.eth`)</li>
                   <li>Contract addresses are also supported for analysis</li>
                   <li>Use the search history to quickly access previously analyzed addresses</li>
                 </ul>
