@@ -1,37 +1,69 @@
 "use client";
-
-import { Button } from "./Button";
-import { Activity, Search } from "lucide-react";
-import { motion } from "framer-motion";
-
+// import { motion } from "framer-motion";
+import { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Search, Menu, X } from "lucide-react"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About Us" },
+  { href: "/pricing", label: "Pricing"},
+  { href: "/search", label: "Search" },
+]
 export default function Navbar() {
-  return (
-    <motion.nav 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="fixed w-full z-50 top-0 px-4 py-3"
-    >
-      <div className="max-w-7xl mx-auto flex items-center justify-between glass-panel px-6 py-3">
-        <div className="flex items-center space-x-2">
-          <Activity className="w-6 h-6 text-purple-500" />
-          <span className="text-xl font-bold">BlockViz</span>
-        </div>
-        
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="/" className="text-gray-300 hover:text-white transition-colors">Home</a>
-          <a href="/about" className="text-gray-300 hover:text-white transition-colors">About Us</a>
-          <a href="/search" className="text-gray-300 hover:text-white transition-colors">Search Address</a>
-        </div>
+  const [isOpen, setIsOpen] = useState(false)
 
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon">
-            <Search className="w-5 h-5" />
-          </Button>
-          <Button className="bg-purple-600 hover:bg-purple-700">
-            Launch App
-          </Button>
-        </div>
+  const toggleMenu = () => setIsOpen(!isOpen)
+
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-gray-900/60 flex items-center justify-between px-6 py-4">
+      <Link href="/" className="text-xl font-semibold text-white">
+        BlockViz
+      </Link>
+      <div className="hidden md:flex items-center justify-center flex-grow">
+        <nav className="flex items-center gap-6">
+          {navItems.map((item) => (
+            <Link key={item.href} href={item.href} className="text-gray-300 hover:text-white">
+              {item.label}
+            </Link>
+          ))}
+        </nav>
       </div>
-    </motion.nav>
-  );
+      <div className="flex items-center gap-4">
+        <Search className="w-5 h-5 text-gray-400" />
+        <Button asChild className="hidden md:inline-flex bg-[#a855f7] hover:bg-[#9333ea] text-white">
+          <Link href="/visualizer">Launch App</Link>
+        </Button>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
+              {isOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-gray-900">
+            <SheetHeader>
+              <SheetTitle className="text-white">Menu</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-4 mt-6">
+              {navItems.map((item) => (
+                <SheetClose asChild key={item.href}>
+                  <Link href={item.href} className="text-gray-300 hover:text-white text-lg" onClick={toggleMenu}>
+                    {item.label}
+                  </Link>
+                </SheetClose>
+              ))}
+              <SheetClose asChild>
+                <Button asChild className="bg-[#a855f7] hover:bg-[#9333ea] text-white mt-4" onClick={toggleMenu}>
+                  <Link href="/visualizer">Launch App</Link>
+                </Button>
+              </SheetClose>
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </header>
+  )
 }
