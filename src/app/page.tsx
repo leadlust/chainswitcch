@@ -1,12 +1,14 @@
 /*TEAM MEMBERS*/
 /*Arlene - SWS00743/104504111*/
 /*Long Le - SWS01138/104845140*/
-/*Son Le* - SWS00890/104991140/
-/*Minh Duc*/
+/*Son Le - SWS00890/104991140*/
+/*Minh Duc - SWS00108/103810053*/
+
 import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Link from "next/link";
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#1a1625]">
@@ -24,7 +26,7 @@ export default function Page() {
             networks, track transactions, and analyze on-chain data in real-time
           </p>
           <Button className="bg-[#a855f7] hover:bg-[#9333ea] text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg h-auto">
-            Launch App
+            <Link href="/visualizer">Launch App</Link>
           </Button>
         </div>
       </section>
