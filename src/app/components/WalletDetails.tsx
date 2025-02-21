@@ -1,12 +1,11 @@
-import { Wallet, ArrowUpRight, ArrowDownLeft, Coins } from "lucide-react"
+import { Wallet, ArrowUpRight, ArrowDownLeft, Coins, Clock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { WalletData } from '@/app/search/page';
+import { WalletData,Transaction } from '@/app/search/page';
 interface WalletDetailsProps {
   walletData: WalletData | null;
   isLoading: boolean;
 }
-
-const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading })  => {
+const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) => {
   if (isLoading) {
     return (
       <div className="w-full max-w-3xl mx-auto mt-4 sm:mt-8 px-4">
@@ -25,6 +24,27 @@ const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) 
   if (!walletData) return null
 
   const { address, balance, transactions } = walletData
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'text-green-500';
+      case 'pending':
+        return 'text-yellow-500';
+      case 'failed':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
+    }
+  };
+
+  const getTransactionTypeIcon = (type: string) => {
+    return type === 'incoming' ? (
+      <ArrowDownLeft className="h-4 w-4 text-green-500" />
+    ) : (
+      <ArrowUpRight className="h-4 w-4 text-red-500" />
+    );
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto mt-4 sm:mt-8 px-4">
@@ -89,7 +109,59 @@ const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) 
           </CardContent>
         </Card>
       </div>
+
+      {/* Transaction History Table */}
+      <div className="mt-4">
+        <Card className="glass-panel">
+          <CardHeader>
+            <CardTitle className="text-xl sm:text-2xl flex items-center text-white font-extra-bold">
+              <Clock className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
+              Transaction History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-xs font-medium text-gray-400">
+                    <th className="p-3">Type</th>
+                    <th className="p-3">Hash</th>
+                    <th className="p-3">Amount (ETH)</th>
+                    <th className="p-3 hidden sm:table-cell">From</th>
+                    <th className="p-3 hidden sm:table-cell">To</th>
+                    <th className="p-3">Time</th>
+                    <th className="p-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.history.map((tx: Transaction) => (
+                    <tr key={tx.hash} className="border-t border-gray-800 text-xs sm:text-sm">
+                      <td className="p-3">
+                        <div className="flex items-center">
+                          {getTransactionTypeIcon(tx.type)}
+                          <span className="ml-2 text-white">{tx.type}</span>
+                        </div>
+                      </td>
+                      <td className="p-3 font-mono text-white">{tx.hash}</td>
+                      <td className="p-3 text-white">{tx.amount}</td>
+                      <td className="p-3 hidden sm:table-cell font-mono text-gray-400">{tx.from}</td>
+                      <td className="p-3 hidden sm:table-cell font-mono text-gray-400">{tx.to}</td>
+                      <td className="p-3 text-gray-400">{new Date(tx.timestamp).toLocaleDateString()}</td>
+                      <td className="p-3">
+                        <span className={`capitalize ${getStatusColor(tx.status)}`}>
+                          {tx.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
+
 export default WalletDetails;

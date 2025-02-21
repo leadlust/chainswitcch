@@ -8,16 +8,78 @@ import Navbar from "../components/Navbar";
 import { useState, FormEvent } from "react";
 import WalletDetails from "../components/WalletDetails";
 import { motion } from "framer-motion";
+export interface Transaction {
+  hash: string;
+  type: 'incoming' | 'outgoing';
+  amount: number;
+  timestamp: string;
+  from: string;
+  to: string;
+  status: 'completed' | 'pending' | 'failed';
+}
+
 export interface WalletData {
   address: string;
-  balance: string | number;
-  transactions?: {
-    incoming?: number;
-    outgoing?: number;
-    firstTx?: string;
-    lastTx?: string;
+  balance: number;
+  transactions: {
+    incoming: number;
+    outgoing: number;
+    firstTx: string;
+    lastTx: string;
+    history: Transaction[];
   };
 }
+const fetchWalletData = async (address: string): Promise<WalletData> => {
+  try {
+    // Generate random number of transactions (1-5)
+    const numTransactions = Math.floor(Math.random() * 5) + 1;
+    
+    // Generate mock transactions
+    const mockTransactions: Transaction[] = Array.from({ length: numTransactions }, () => {
+      const isIncoming = Math.random() > 0.5;
+      const amount = +(Math.random() * 2).toFixed(4);
+      const timestamp = new Date(Date.now() - Math.random() * 10000000000).toISOString();
+      const statuses: ('completed' | 'pending' | 'failed')[] = ['completed', 'pending', 'failed'];
+      
+      return {
+        hash: `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
+        type: isIncoming ? 'incoming' : 'outgoing',
+        amount,
+        timestamp,
+        from: isIncoming 
+          ? `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`
+          : address,
+        to: isIncoming 
+          ? address 
+          : `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
+        status: statuses[Math.floor(Math.random() * statuses.length)]
+      };
+    });
+
+    // Sort transactions by timestamp (newest first)
+    mockTransactions.sort((a, b) => 
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    const mockData: WalletData = {
+      address: address,
+      balance: +(Math.random() * 10).toFixed(4),
+      transactions: {
+        incoming: Math.floor(Math.random() * 100),
+        outgoing: Math.floor(Math.random() * 100),
+        firstTx: new Date(Date.now() - Math.random() * 10000000000).toLocaleString(),
+        lastTx: new Date().toLocaleString(),
+        history: mockTransactions
+      }
+    };
+
+    return mockData;
+  } catch (error) {
+    console.error("Error fetching wallet data:", error);
+    throw error;
+  }
+};
+
 export default function Page() {
   const [address, setAddress] = useState<string>("");
   const [isValidating, setIsValidating] = useState<boolean>(false);
@@ -31,30 +93,6 @@ export default function Page() {
   const isValidAddress = (address: string): boolean => {
     // Basic Ethereum address validation
     return /^0x[a-fA-F0-9]{40}$/.test(address);
-  };
-
-  const fetchWalletData = async (address: string): Promise<WalletData> => {
-    try {
-      // Here you would typically make an API call to your backend
-      // This is a mock response for demonstration
-      const mockData: WalletData = {
-        address: address,
-        balance: (Math.random() * 10).toFixed(4),
-        transactions: {
-          incoming: Math.floor(Math.random() * 100),
-          outgoing: Math.floor(Math.random() * 100),
-          firstTx: new Date(
-            Date.now() - Math.random() * 10000000000
-          ).toLocaleString(),
-          lastTx: new Date().toLocaleString(),
-        },
-      };
-
-      return mockData;
-    } catch (error) {
-      console.error("Error fetching wallet data:", error);
-      throw error;
-    }
   };
 
   const handleSearch = async (e: FormEvent) => {
