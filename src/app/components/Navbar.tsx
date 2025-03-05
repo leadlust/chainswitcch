@@ -1,21 +1,35 @@
 "use client";
-// import { motion } from "framer-motion";
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Search, Menu, X } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/pricing", label: "Pricing"},
   { href: "/search", label: "Search" },
-]
+];
+
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [lastSearchedAddress, setLastSearchedAddress] = useState<string | null>(null);
+  
+  //check for the last searched address in localStorage when the component mounts
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedAddress = localStorage.getItem("lastSearchedAddress");
+      setLastSearchedAddress(storedAddress);
+    }
+  }, []);
 
-  const toggleMenu = () => setIsOpen(!isOpen)
+  const toggleMenu = () => setIsOpen(!isOpen);
 
+  //determine the visualizer URL
+  const visualizerUrl = lastSearchedAddress 
+    ? `/visualizer?address=${lastSearchedAddress}` 
+    : "/visualizer";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-gray-900/60 flex items-center justify-between px-6 py-4">
@@ -32,9 +46,8 @@ export default function Navbar() {
         </nav>
       </div>
       <div className="flex items-center gap-4">
-        <Search className="w-5 h-5 text-gray-400" />
         <Button asChild className="hidden md:inline-flex bg-[#a855f7] hover:bg-[#9333ea] text-white">
-          <Link href="/visualizer">Launch App</Link>
+          <Link href={visualizerUrl}>Launch App</Link>
         </Button>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
@@ -57,7 +70,7 @@ export default function Navbar() {
               ))}
               <SheetClose asChild>
                 <Button asChild className="bg-[#a855f7] hover:bg-[#9333ea] text-white mt-4" onClick={toggleMenu}>
-                  <Link href="/visualizer">Launch App</Link>
+                  <Link href={visualizerUrl}>Launch App</Link>
                 </Button>
               </SheetClose>
             </nav>
@@ -65,5 +78,5 @@ export default function Navbar() {
         </Sheet>
       </div>
     </header>
-  )
+  );
 }

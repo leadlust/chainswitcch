@@ -62,7 +62,7 @@ const PricingTier = ({
 
 const FAQItem = ({ question, answer }: FAQItemProps) => (
   <AccordionItem value={question}>
-    <AccordionTrigger className="text-left text-sm sm:text-base">
+    <AccordionTrigger className="text-left text-sm sm:text-base text-white">
       {question}
     </AccordionTrigger>
     <AccordionContent className="text-gray-400 text-sm">

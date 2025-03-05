@@ -1,10 +1,15 @@
-import { Wallet, ArrowUpRight, ArrowDownLeft, Coins, Clock } from "lucide-react"
+import { Wallet, ArrowUpRight, ArrowDownLeft, Coins, Clock, ChartPie } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { WalletData,Transaction } from '@/app/search/page';
+import { WalletData, Transaction } from '@/app/search/page';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import VisualizeWalletButton from "./VisualizeWalletButton";
+
 interface WalletDetailsProps {
   walletData: WalletData | null;
   isLoading: boolean;
 }
+
 const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) => {
   if (isLoading) {
     return (
@@ -85,11 +90,12 @@ const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) 
 
       <div className="mt-4">
         <Card className="glass-panel">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-xl sm:text-2xl flex items-center text-white font-extra-bold">
               <Wallet className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />
               Wallet Details
             </CardTitle>
+            <VisualizeWalletButton walletAddress={address} />
           </CardHeader>
           <CardContent>
             <div className="space-y-3 sm:space-y-4 text-gray-400">
@@ -120,9 +126,9 @@ const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) 
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
+            <div className="max-h-[500px] overflow-y-auto border border-gray-800 rounded-lg">
               <table className="w-full">
-                <thead>
+                <thead className="sticky top-0 bg-black text-gray-400">
                   <tr className="text-left text-xs font-medium text-gray-400">
                     <th className="p-3">Type</th>
                     <th className="p-3">Hash</th>
@@ -142,10 +148,10 @@ const WalletDetails: React.FC<WalletDetailsProps> = ({ walletData, isLoading }) 
                           <span className="ml-2 text-white">{tx.type}</span>
                         </div>
                       </td>
-                      <td className="p-3 font-mono text-white">{tx.hash}</td>
+                      <td className="p-3 font-mono text-white truncate w-[180px]">{tx.hash}</td>
                       <td className="p-3 text-white">{tx.amount}</td>
-                      <td className="p-3 hidden sm:table-cell font-mono text-gray-400">{tx.from}</td>
-                      <td className="p-3 hidden sm:table-cell font-mono text-gray-400">{tx.to}</td>
+                      <td className="p-3 hidden sm:table-cell font-mono text-gray-400 truncate w-[150px]">{tx.from}</td>
+                      <td className="p-3 hidden sm:table-cell font-mono text-gray-400 truncate w-[150px]">{tx.to}</td>
                       <td className="p-3 text-gray-400">{new Date(tx.timestamp).toLocaleDateString()}</td>
                       <td className="p-3">
                         <span className={`capitalize ${getStatusColor(tx.status)}`}>

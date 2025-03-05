@@ -29,7 +29,7 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">Resources</h4>
             <div className="space-y-2 text-sm">
               <div>
-                <Link href="/docs" className="hover:text-white">
+                <Link href="https://github.com/Arlphuongy/blockviz" className="hover:text-white">
                   Documentation
                 </Link>
               </div>

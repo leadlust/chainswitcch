@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, BarChart2, Search, Wallet } from "lucide-react";
+import { useState, FormEvent, useEffect } from "react";
+import { motion } from "framer-motion";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { useState, FormEvent } from "react";
 import WalletDetails from "../components/WalletDetails";
-import { motion } from "framer-motion";
+
 export interface Transaction {
   hash: string;
   type: 'incoming' | 'outgoing';
@@ -15,7 +16,7 @@ export interface Transaction {
   timestamp: string;
   from: string;
   to: string;
-  status: 'completed' | 'pending' | 'failed';
+  status: 'completed';
 }
 
 export interface WalletData {
@@ -29,91 +30,140 @@ export interface WalletData {
     history: Transaction[];
   };
 }
-const fetchWalletData = async (address: string): Promise<WalletData> => {
-  try {
-    // Generate random number of transactions (1-5)
-    const numTransactions = Math.floor(Math.random() * 5) + 1;
-    
-    // Generate mock transactions
-    const mockTransactions: Transaction[] = Array.from({ length: numTransactions }, () => {
-      const isIncoming = Math.random() > 0.5;
-      const amount = +(Math.random() * 2).toFixed(4);
-      const timestamp = new Date(Date.now() - Math.random() * 10000000000).toISOString();
-      const statuses: ('completed' | 'pending' | 'failed')[] = ['completed', 'pending', 'failed'];
-      
-      return {
-        hash: `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
-        type: isIncoming ? 'incoming' : 'outgoing',
-        amount,
-        timestamp,
-        from: isIncoming 
-          ? `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`
-          : address,
-        to: isIncoming 
-          ? address 
-          : `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
-        status: statuses[Math.floor(Math.random() * statuses.length)]
-      };
-    });
-
-    // Sort transactions by timestamp (newest first)
-    mockTransactions.sort((a, b) => 
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
-
-    const mockData: WalletData = {
-      address: address,
-      balance: +(Math.random() * 10).toFixed(4),
-      transactions: {
-        incoming: Math.floor(Math.random() * 100),
-        outgoing: Math.floor(Math.random() * 100),
-        firstTx: new Date(Date.now() - Math.random() * 10000000000).toLocaleString(),
-        lastTx: new Date().toLocaleString(),
-        history: mockTransactions
-      }
-    };
-
-    return mockData;
-  } catch (error) {
-    console.error("Error fetching wallet data:", error);
-    throw error;
-  }
-};
 
 export default function Page() {
+  //state management
   const [address, setAddress] = useState<string>("");
   const [isValidating, setIsValidating] = useState<boolean>(false);
   const [walletData, setWalletData] = useState<WalletData | null>(null);
-  const [recentSearches, setRecentSearches] = useState<string[]>([
-    "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
-    "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
-    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-  ]);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [isLoadingRecent, setIsLoadingRecent] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshCounter, setRefreshCounter] = useState(0);
+
+  //fetch recent searches on component mount and walletData updates
+  useEffect(() => {
+    const fetchRecentSearches = async () => {
+      setIsLoadingRecent(true);
+      try {
+        const response = await fetch('/api/search');
+        if (response.ok) {
+          const data = await response.json();
+          setRecentSearches(data);
+        } else {
+          console.error('Recent searches error:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching recent searches:', error);
+      } finally {
+        setIsLoadingRecent(false);
+      }
+    };
+    fetchRecentSearches();
+  }, [refreshCounter]); //refresh when walletData changes
 
   const isValidAddress = (address: string): boolean => {
-    // Basic Ethereum address validation
     return /^0x[a-fA-F0-9]{40}$/.test(address);
   };
 
-  const handleSearch = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleRecentSearchClick = async (recentAddress: string) => {
+    //scroll to top of the page when a recent search is clicked
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
 
-    if (!isValidAddress(address)) {
-      alert("Please enter a valid Ethereum address");
+    setAddress(recentAddress);
+    
+    //after setting the address, manually trigger the search
+    setError(null);
+    setWalletData(null);
+  
+    if (!isValidAddress(recentAddress)) {
+      setError("Please enter a valid Ethereum address");
       return;
     }
+  
+    setIsValidating(true);
+    try {
+      const data = await fetchWalletData(recentAddress);
+      setWalletData(data);
+      setRefreshCounter(prev => prev + 1);
+    } 
+    catch (err: any) {
+      setError(err.message || "Failed to fetch wallet data");
+    } finally {
+      setIsValidating(false);
+    }
+  };
 
+  //fetch wallet data from the server
+  const fetchWalletData = async (address: string): Promise<WalletData> => {
+    try {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch data');
+      }
+
+      const result = await response.json();
+      return {
+        address,
+        balance: result.balance,
+        transactions: {
+          incoming: result.incomingCount,
+          outgoing: result.outgoingCount,
+          firstTx: result.firstTransaction,
+          lastTx: result.lastTransaction,
+          history: result.transactions.map((tx: any) => ({
+            hash: tx.hash,
+            type: tx.from.toLowerCase() === address.toLowerCase() ? 'outgoing' : 'incoming',
+            amount: tx.value / 1e18,
+            timestamp: new Date(parseInt(tx.timeStamp) * 1000).toISOString(),
+            from: tx.from,
+            to: tx.to,
+            status: 'completed'
+          }))
+        }
+      };
+    } catch (error) {
+      console.error("Error fetching wallet data:", error);
+      throw error;
+    }
+  };
+
+  //handle search form submission
+  const handleSearch = async (e: FormEvent) => {
+    //if this is triggered programmatically, prevent default only if e is an actual event
+    if (e && 'preventDefault' in e) {
+      e.preventDefault();
+    }
+    
+    setError(null);
+    setWalletData(null);
+  
+    if (!isValidAddress(address)) {
+      setError("Please enter a valid Ethereum address");
+      return;
+    }
+  
     setIsValidating(true);
     try {
       const data = await fetchWalletData(address);
       setWalletData(data);
 
-      // Update recent searches
-      if (!recentSearches.includes(address)) {
-        setRecentSearches((prev) => [address, ...prev.slice(0, 2)]);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("lastSearchedAddress", address);
       }
-    } catch {
-      alert("Error fetching wallet data");
+
+      setRefreshCounter(prev => prev + 1);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch wallet data");
     } finally {
       setIsValidating(false);
     }
@@ -121,6 +171,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-black">
+
       <Navbar />
       <div className="bg-gradient-to-b from-[#1a1625] via-[#6b21a8] to-black">
         {/* Hero Section */}
@@ -132,7 +183,17 @@ export default function Page() {
             Enter any blockchain address to visualize its transactions,
             connections, and analytics
           </p>
-          {/* Search Form */}
+
+          {/* add error display */}
+          {error && (
+            <div className="max-w-4xl mx-auto px-4 mb-4">
+              <div className="bg-red-900/50 text-red-300 p-4 rounded-lg border border-red-800">
+                ⚠️ {error}
+              </div>
+            </div>
+          )}
+          
+          {/* search form */}
           <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -172,12 +233,12 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Wallet Details */}
+      {/* wallet details */}
       <WalletDetails walletData={walletData} isLoading={isValidating} />
 
-      {/* Feature Cards */}
+      {/* feature cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto px-4 pt-12 sm:pt-16 mb-12 sm:mb-16">
-        <Card className="bg-gray-900/50 border-gray-800 text-white">
+        <Card className="glass-panel bg-gray-900/50 border-gray-800 text-white">
           <CardHeader className="space-y-1">
             <Wallet className="h-6 w-6 sm:h-8 sm:w-8 text-purple-400" />
             <h3 className="text-base sm:text-lg font-semibold">
@@ -192,7 +253,7 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-900/50 border-gray-800 text-white">
+        <Card className="glass-panel bg-gray-900/50 border-gray-800 text-white">
           <CardHeader className="space-y-1">
             <BarChart2 className="h-6 w-6 sm:h-8 sm:w-8 text-purple-400" />
             <h3 className="text-base sm:text-lg font-semibold">
@@ -207,7 +268,7 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-900/50 border-gray-800 text-white">
+        <Card className="glass-panel bg-gray-900/50 border-gray-800 text-white">
           <CardHeader className="space-y-1">
             <svg
               className="h-6 w-6 sm:h-8 sm:w-8 text-purple-400"
@@ -231,33 +292,41 @@ export default function Page() {
         </Card>
       </div>
 
-      {/* Recent Searches */}
+      {/* recent searches */}
       <div className="max-w-4xl mx-auto px-4 mb-12 sm:mb-16">
-        <Card className="bg-gray-900/50 border-gray-800 text-white">
+        <Card className="glass-panel bg-gray-900/50 border-gray-800 text-white">
           <CardHeader>
             <h3 className="text-lg sm:text-xl font-semibold">
               Recent Searches
             </h3>
           </CardHeader>
           <CardContent className="space-y-2">
-            {recentSearches.map((address) => (
-              <div
-                key={address}
-                className="flex items-center gap-2 p-2 rounded hover:bg-gray-800/50"
-              >
-                <div className="h-3 w-3 sm:h-4 sm:w-4 rounded bg-purple-500" />
-                <code className="text-xs sm:text-sm text-gray-300">
-                  {address}
-                </code>
+            {isLoadingRecent ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500" />
               </div>
-            ))}
-          </CardContent>
+            ) : recentSearches.length > 0 ? (
+              recentSearches.map((address) => (
+                <button
+                  key={address}
+                  onClick={() => handleRecentSearchClick(address)}
+                  className="w-full text-left flex items-center gap-2 p-2 rounded hover:bg-gray-800/50 transition-colors">
+                  <div className="h-3 w-3 sm:h-4 sm:w-4 rounded bg-purple-500" />
+                  <code className="text-xs sm:text-sm text-gray-300">
+                    {address}
+                  </code>
+                </button>
+              ))
+            ) : (
+              <p className="text-gray-400 text-sm py-2">No recent searches found</p>
+            )}
+        </CardContent>
         </Card>
       </div>
 
       {/* Search Tips */}
       <div className="max-w-4xl mx-auto px-4 mb-12 sm:mb-16">
-        <Card className="bg-gray-900/50 border-gray-800 text-white">
+        <Card className="glass-panel bg-gray-900/50 border-gray-800 text-white">
           <CardHeader>
             <h3 className="text-lg sm:text-xl font-semibold">Search Tips</h3>
           </CardHeader>
