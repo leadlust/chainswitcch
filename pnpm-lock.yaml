@@ -17,12 +17,21 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.1.2
         version: 1.1.2(@types/react@19.0.8)(react@18.3.1)
+      '@supabase/supabase-js':
+        specifier: ^2.49.1
+        version: 2.49.1
+      aframe-extras:
+        specifier: ^7.5.4
+        version: 7.5.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      force-graph:
+        specifier: ^1.49.2
+        version: 1.49.2
       framer-motion:
         specifier: ^12.4.0
         version: 12.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -39,8 +48,11 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-force-graph:
-        specifier: ^1.46.0
-        version: 1.46.0(react@18.3.1)(three@0.173.0)
+        specifier: ^1.47.3
+        version: 1.47.3(aframe@1.6.0)(react@18.3.1)(three@0.173.0)
+      react-force-graph-2d:
+        specifier: ^1.27.0
+        version: 1.27.0(react@18.3.1)
       react-particles:
         specifier: ^2.12.2
         version: 2.12.2(react@18.3.1)
@@ -97,9 +109,11 @@ packages:
     resolution: {integrity: sha512-KHcwKVF8394ioKhc4h3y5H9jPBvw+lUmD1BJd1AEV/SO+FM324CXVYTvbGg2IuW0nOPR/ChXvlWhvIZaOtyeTg==}
     engines: {node: '>=12'}
 
-  3d-force-graph-vr@2.4.3:
-    resolution: {integrity: sha512-os/IPpkWUqNnqWFQISaa5Snts1uUFf485SMPpPi2BIJLHbW9Jxt+1PQWc2rqT3tDFTh9J72BnxyuqegyMrqxdQ==}
+  3d-force-graph-vr@3.0.2:
+    resolution: {integrity: sha512-pPNeRKLR7WeklO08Ofhf0gomd5d4xsKfAJJpWJUMeGtJp+Clo0+a68xbbgD+fCAHQWt8RJhOdpCgJ2vFwr+2sw==}
     engines: {node: '>=12'}
+    peerDependencies:
+      aframe: ^1.5
 
   3d-force-graph@1.76.1:
     resolution: {integrity: sha512-rsHLcd0X8mvLMADvJQIdliLx3B2ZfVjMq/hbVkxfAe06eEw2TmLWd56/sUT4BBJqEOHuniCjomKspet8S5azlA==}
@@ -595,6 +609,28 @@ packages:
     resolution: {integrity: sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==}
     engines: {node: '>=6'}
 
+  '@supabase/auth-js@2.68.0':
+    resolution: {integrity: sha512-odG7nb7aOmZPUXk6SwL2JchSsn36Ppx11i2yWMIc/meUO2B2HK9YwZHPK06utD9Ql9ke7JKDbwGin/8prHKxxQ==}
+
+  '@supabase/functions-js@2.4.4':
+    resolution: {integrity: sha512-WL2p6r4AXNGwop7iwvul2BvOtuJ1YQy8EbOd0dhG1oN1q8el/BIRSFCFnWAMM/vJJlHWLi4ad22sKbKr9mvjoA==}
+
+  '@supabase/node-fetch@2.6.15':
+    resolution: {integrity: sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==}
+    engines: {node: 4.x || >=6.0.0}
+
+  '@supabase/postgrest-js@1.19.2':
+    resolution: {integrity: sha512-MXRbk4wpwhWl9IN6rIY1mR8uZCCG4MZAEji942ve6nMwIqnBgBnZhZlON6zTTs6fgveMnoCILpZv1+K91jN+ow==}
+
+  '@supabase/realtime-js@2.11.2':
+    resolution: {integrity: sha512-u/XeuL2Y0QEhXSoIPZZwR6wMXgB+RQbJzG9VErA3VghVt7uRfSVsjeqd7m5GhX3JR6dM/WRmLbVR8URpDWG4+w==}
+
+  '@supabase/storage-js@2.7.1':
+    resolution: {integrity: sha512-asYHcyDR1fKqrMpytAS1zjyEfvxuOIp1CIXX7ji4lHHcJKqyk+sLl/Vxgm4sN6u8zvuUtae9e4kDxQP2qrwWBA==}
+
+  '@supabase/supabase-js@2.49.1':
+    resolution: {integrity: sha512-lKaptKQB5/juEF5+jzmBeZlz69MdHZuxf+0f50NwhL+IE//m4ZnOeWlsKRjjsM0fVayZiQKqLvYdBn0RLkhGiQ==}
+
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
 
@@ -764,6 +800,9 @@ packages:
   '@types/node@20.17.17':
     resolution: {integrity: sha512-/WndGO4kIfMicEQLTi/mDANUu/iVUhT7KboZPdEqqHQ4aTS+3qT3U5gIqWDFV+XouorjfgGqvKILJeHhuQgFYg==}
 
+  '@types/phoenix@1.6.6':
+    resolution: {integrity: sha512-PIzZZlEppgrpoT2QgbnDU+MMzuR6BbCjllj0bM70lWoejMeNJAxCchxnv7J3XFkI8MpygtRpzXrIlmWUBclP5A==}
+
   '@types/react-dom@19.0.3':
     resolution: {integrity: sha512-0Knk+HJiMP/qOZgMyNFamlIjw9OFCsyC2ZbigmEEyXXixgre6IQpm/4V+r3qH4GC1JPvRJKInw+on2rV6YZLeA==}
     peerDependencies:
@@ -783,6 +822,9 @@ packages:
 
   '@types/webxr@0.5.21':
     resolution: {integrity: sha512-geZIAtLzjGmgY2JUi6VxXdCrTb99A7yP49lxLr2Nm/uIK0PkkxcEi4OGhoGDO4pxCf3JwGz2GiJL2Ej4K2bKaA==}
+
+  '@types/ws@8.18.0':
+    resolution: {integrity: sha512-8svvI3hMyvN0kKCJMvTJP/x6Y/EoQbepff882wL+Sn5QsXb3etnamgrJq4isrBxSJj5L2AuXcI0+bgkoAXGUJw==}
 
   '@typescript-eslint/eslint-plugin@8.23.0':
     resolution: {integrity: sha512-vBz65tJgRrA1Q5gWlRfvoH+w943dq9K1p1yDBY2pc+a1nbBLZp7fB9+Hk8DaALUbzjqlMfgaqlVPT1REJdkt/w==}
@@ -1475,8 +1517,8 @@ packages:
     resolution: {integrity: sha512-kKaIINnFpzW6ffJNDjjyjrk21BkDx38c0xa/klsT8VzLCaMEefv4ZTacrcVR4DmgTeBra++jMDAfS/tS799YDw==}
     engines: {node: '>= 0.4'}
 
-  force-graph@1.49.0:
-    resolution: {integrity: sha512-S8ODRE6eVtHtkIPCRu9Zj03uL/l8EpwKIZnIzLZO6aiZIMQLI8JguEeT3uCozT9kB2nLXem0xCiA7Pnk38Yy7g==}
+  force-graph@1.49.2:
+    resolution: {integrity: sha512-dXArBN/5Aj9pYf2/vdab8C8v/1/HtZ7lrRSGoWgaofHwbopAgpGYTkveBOkeI9+u6xfgBA+02Wgau2QnZpREXQ==}
     engines: {node: '>=12'}
 
   foreground-child@3.3.0:
@@ -2193,8 +2235,14 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-force-graph@1.46.0:
-    resolution: {integrity: sha512-ha1C+2QZYKUdb4kaq65tjwfAslgXRK7PF39KseztMcskV5Is525pXzEKhAdvSLO0xfThEAX/eIHzC71/TrIkXw==}
+  react-force-graph-2d@1.27.0:
+    resolution: {integrity: sha512-NJAc7lWvY8PxBMn2uFXDDaeLcgJp37IYF6r0geOJlmMs5Lsf0IDmr35T7KNszHV3OUmTrZuPlyxrrzwGwyKhRg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '*'
+
+  react-force-graph@1.47.3:
+    resolution: {integrity: sha512-tkpXeQM3ZnvvtfoDiVz4peRJW/vtkgtuKq7oclBFVWUOU0mpu0X9cVaAQuHYl79HCVq/q2j/b5stwdDBJ8QWxA==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '*'
@@ -2518,6 +2566,9 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
+  tr46@0.0.3:
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+
   ts-api-utils@2.0.1:
     resolution: {integrity: sha512-dnlgjFSVetynI8nzgJ+qF62efpglpWRk8isUEWZGWlJYySCTD6aKvbUDu+zbPeDakk3bg5H4XpitHukgfL1m9w==}
     engines: {node: '>=18.12'}
@@ -2602,11 +2653,17 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
+  webidl-conversions@3.0.1:
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+
   webvr-polyfill-dpdb@1.0.18:
     resolution: {integrity: sha512-O0S1ZGEWyPvyZEkS2VbyV7mtir/NM9MNK3EuhbHPoJ8EHTky2pTXehjIl+IiDPr+Lldgx129QGt3NGly7rwRPw==}
 
   webvr-polyfill@0.10.12:
     resolution: {integrity: sha512-trDJEVUQnRIVAnmImjEQ0BlL1NfuWl8+eaEdu+bs4g59c7OtETi/5tFkgEFDRaWEYwHntXs/uFF3OXZuutNGGA==}
+
+  whatwg-url@5.0.0:
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
@@ -2647,6 +2704,18 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
+  ws@8.18.1:
+    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xhr@2.6.0:
     resolution: {integrity: sha512-/eCGLb5rxjx5e3mF1A7s+pLlR6CGyqWN91fv1JgER5mVWg1MZmlhBvy9kjcsOdRk8RrIujotWyJamfyrp+WIcA==}
 
@@ -2683,7 +2752,7 @@ snapshots:
     transitivePeerDependencies:
       - three
 
-  3d-force-graph-vr@2.4.3(three@0.173.0):
+  3d-force-graph-vr@3.0.2(aframe@1.6.0)(three@0.173.0):
     dependencies:
       accessor-fn: 1.5.1
       aframe: 1.6.0
@@ -2692,7 +2761,6 @@ snapshots:
       kapsule: 1.16.0
       polished: 4.3.1
     transitivePeerDependencies:
-      - supports-color
       - three
 
   3d-force-graph@1.76.1:
@@ -3113,6 +3181,48 @@ snapshots:
 
   '@sindresorhus/is@0.14.0': {}
 
+  '@supabase/auth-js@2.68.0':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+
+  '@supabase/functions-js@2.4.4':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+
+  '@supabase/node-fetch@2.6.15':
+    dependencies:
+      whatwg-url: 5.0.0
+
+  '@supabase/postgrest-js@1.19.2':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+
+  '@supabase/realtime-js@2.11.2':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+      '@types/phoenix': 1.6.6
+      '@types/ws': 8.18.0
+      ws: 8.18.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@supabase/storage-js@2.7.1':
+    dependencies:
+      '@supabase/node-fetch': 2.6.15
+
+  '@supabase/supabase-js@2.49.1':
+    dependencies:
+      '@supabase/auth-js': 2.68.0
+      '@supabase/functions-js': 2.4.4
+      '@supabase/node-fetch': 2.6.15
+      '@supabase/postgrest-js': 1.19.2
+      '@supabase/realtime-js': 2.11.2
+      '@supabase/storage-js': 2.7.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@swc/counter@0.1.3': {}
 
   '@swc/helpers@0.5.15':
@@ -3361,6 +3471,8 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
+  '@types/phoenix@1.6.6': {}
+
   '@types/react-dom@19.0.3(@types/react@19.0.8)':
     dependencies:
       '@types/react': 19.0.8
@@ -3385,6 +3497,10 @@ snapshots:
       meshoptimizer: 0.18.1
 
   '@types/webxr@0.5.21': {}
+
+  '@types/ws@8.18.0':
+    dependencies:
+      '@types/node': 20.17.17
 
   '@typescript-eslint/eslint-plugin@8.23.0(@typescript-eslint/parser@8.23.0(eslint@9.20.0(jiti@1.21.7))(typescript@5.7.3))(eslint@9.20.0(jiti@1.21.7))(typescript@5.7.3)':
     dependencies:
@@ -4289,7 +4405,7 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
-  force-graph@1.49.0:
+  force-graph@1.49.2:
     dependencies:
       '@tweenjs/tween.js': 23.1.3
       accessor-fn: 1.5.1
@@ -5026,17 +5142,24 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-force-graph@1.46.0(react@18.3.1)(three@0.173.0):
+  react-force-graph-2d@1.27.0(react@18.3.1):
+    dependencies:
+      force-graph: 1.49.2
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-kapsule: 2.5.6(react@18.3.1)
+
+  react-force-graph@1.47.3(aframe@1.6.0)(react@18.3.1)(three@0.173.0):
     dependencies:
       3d-force-graph: 1.76.1
       3d-force-graph-ar: 1.9.3(three@0.173.0)
-      3d-force-graph-vr: 2.4.3(three@0.173.0)
-      force-graph: 1.49.0
+      3d-force-graph-vr: 3.0.2(aframe@1.6.0)(three@0.173.0)
+      force-graph: 1.49.2
       prop-types: 15.8.1
       react: 18.3.1
       react-kapsule: 2.5.6(react@18.3.1)
     transitivePeerDependencies:
-      - supports-color
+      - aframe
       - three
 
   react-is@16.13.1: {}
@@ -5451,6 +5574,8 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
+  tr46@0.0.3: {}
+
   ts-api-utils@2.0.1(typescript@5.7.3):
     dependencies:
       typescript: 5.7.3
@@ -5557,11 +5682,18 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
+  webidl-conversions@3.0.1: {}
+
   webvr-polyfill-dpdb@1.0.18: {}
 
   webvr-polyfill@0.10.12:
     dependencies:
       cardboard-vr-display: 1.0.19
+
+  whatwg-url@5.0.0:
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
 
   which-boxed-primitive@1.1.1:
     dependencies:
@@ -5624,6 +5756,8 @@ snapshots:
       strip-ansi: 7.1.0
 
   wrappy@1.0.2: {}
+
+  ws@8.18.1: {}
 
   xhr@2.6.0:
     dependencies:
